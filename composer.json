@@ -1,0 +1,6 @@
+{
+  "require": {
+    "nikic/iter": "dev-master",
+    "lstrojny/functional-php": "~1.2"
+  }
+}
