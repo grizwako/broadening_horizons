@@ -40,6 +40,17 @@ function mappedRow($row, $columnMap)
     };
 }
 
+
+/**
+ * Lazily read CSV file
+ *
+ * @param $filename
+ * @param string $split
+ * @param int $maxLineLength
+ * @param array $columnMap
+ * @return Generator
+ * @throws Exception
+ */
 function mappedCsvGenerator($filename, $split = ',', $maxLineLength = 0, $columnMap = [])
 {
     $fileHandle = fopen($filename,'r');
@@ -83,6 +94,7 @@ $statsBySubclassificationAndYear = map($statsBySubclassification, function($subc
 });
 
 
+
 $totalByYear = $statsBySubclassificationAndYear['Total.'];
 $years = array_keys($totalByYear);
 sort($years); // Why is this bad style?
@@ -100,9 +112,11 @@ foreach($statsBySubclassificationAndYear as $subclass => $byYear) {
     $tableRow = $table->addChild('tr');
     $tableRow->addChild('td', $subclass);
     $percentage = 0;
+    //we are relying on $years that was defined too far from where we are using it
     foreach($years as $year) {
         if(array_key_exists($year, $byYear)) {
             // can this part of code be improved by using functional style?
+            // we are relying on $percentage from last iteration, stuff like that causes bugs
             $tempPerc = 100 *($byYear[$year] / $totalByYear[$year]);
             $delta = $tempPerc - $percentage;
             $percentage = $tempPerc;
